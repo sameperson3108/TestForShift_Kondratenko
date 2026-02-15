@@ -1,74 +1,58 @@
 package FileContentFilteringUtility;
 
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        List<String> integers = new ArrayList<>();
-        List<String> floats = new ArrayList<>();
-        List<String> strings = new ArrayList<>();
-
+        boolean append = false;
+        String prefix = "result";
 
         if (args.length == 0) {
-            System.out.println("Передайте какие-нибудь файлы формата .txt");
+            System.out.println("Передайте имена файлов");
             return;
         }
 
-        for (String fileName : args) {
-            System.out.println();
-            System.out.println("Чтение файла " + fileName);
+        FileClassifier classifier = new FileClassifier();
+        for (int i = 0; i < args.length; i++) {
+            String arg = args[i];
+
+            if (arg.equals("-a")) {
+                append = true;
+                continue;
+            }
+
+            if (arg.equals("-p")) {
+                if (i + 1 < args.length) {
+                    prefix = args[i + 1];
+                    i++;
+                }
+                continue;
+            }
+
+            System.out.println("Читаем файл: " + arg);
             try {
-                File file = new File(fileName);
+                File file = new File(arg);
                 Scanner scanner = new Scanner(file);
+
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
-                    if (isInteger(line)) integers.add(line);
-                    else if (isDouble(line)) floats.add(line);
-                    else strings.add(line);
+                    classifier.processLine(line);
                 }
 
                 scanner.close();
 
-                System.out.println("-Integers-");
-                for (String s : integers) {
-                    System.out.println(s);
-                }
-
-                System.out.println("-Floats-");
-                for (String s : floats) {
-                    System.out.println(s);
-                }
-
-                System.out.println("-Strings-");
-                for (String s : strings) {
-                    System.out.println(s);
-                }
-
-            } catch (FileNotFoundException e) {
-                System.out.println("Файл не найден: " + fileName);
+            } catch (Exception e) {
+                System.out.println("Не удалось прочитать файл: " + arg);
             }
         }
-    }
 
-    public static boolean isInteger(String line) {
-        try {
-            Integer.parseInt(line);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+        // вывод в консоль
+        classifier.printResults();
 
-    public static boolean isDouble(String line) {
-        try {
-            Double.parseDouble(line);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
+        // запись в файлы
+        FileWriterUtil.write(prefix + "integers.txt", classifier.getIntegers(), append);
+        FileWriterUtil.write(prefix + "floats.txt", classifier.getFloats(), append);
+        FileWriterUtil.write(prefix +"strings.txt", classifier.getStrings(), append);
     }
 }
