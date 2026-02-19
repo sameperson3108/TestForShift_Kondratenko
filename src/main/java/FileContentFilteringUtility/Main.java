@@ -1,58 +1,108 @@
 package FileContentFilteringUtility;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.Scanner;
 
 public class Main {
+
     public static void main(String[] args) {
-        boolean append = false;
-        String prefix = "result";
 
         if (args.length == 0) {
-            System.out.println("Передайте имена файлов");
+            System.out.println("Ошибка: не переданы аргументы.");
+            return;
+        }
+
+        EnterOptions options = parseArguments(args);
+
+        if (options == null) {
+            return;
+        }
+
+        if (options.files.isEmpty()) {
+            System.out.println("Ошибка: не переданы входные файлы.");
             return;
         }
 
         FileClassifier classifier = new FileClassifier();
+        processFiles(options, classifier);
+
+        FileWriterUtil.write(options.prefix + "integers.txt", classifier.getIntegers(), options.append);
+        FileWriterUtil.write(options.prefix + "floats.txt", classifier.getFloats(), options.append);
+        FileWriterUtil.write(options.prefix + "strings.txt", classifier.getStrings(), options.append);
+
+        if (options.fullStats) {
+            classifier.printFullStats();
+        } else if (options.shortStats) {
+            classifier.printShortStats();
+        }
+
+        System.out.println("Готово.");
+    }
+
+    private static EnterOptions parseArguments(String[] args) {
+        EnterOptions options = new EnterOptions();
+
         for (int i = 0; i < args.length; i++) {
             String arg = args[i];
 
-            if (arg.equals("-a")) {
-                append = true;
+            switch (arg) {
+                case "-a":
+                    options.append = true;
+                    break;
+
+                case "-s":
+                    options.shortStats = true;
+                    break;
+
+                case "-f":
+                    options.fullStats = true;
+                    break;
+
+                case "-p":
+                    if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
+                        options.prefix = args[i + 1];
+                        i++;
+                    } else {
+                        System.out.println("Ошибка: после -p нужно указать префикс.");
+                        return null;
+                    }
+                    break;
+
+                default:
+                    if (arg.startsWith("-")) {
+                        System.out.println("Неизвестный параметр: " + arg);
+                        return null;
+                    }
+                    options.addFile(arg);
+            }
+        }
+
+        return options;
+    }
+
+    private static void processFiles(EnterOptions options, FileClassifier classifier) {
+
+        for (String fileName : options.files) {
+            System.out.println("Читаем файл: " + fileName);
+
+            File file = new File(fileName);
+
+            if (!file.exists()) {
+                System.out.println("Файл не найден: " + fileName);
                 continue;
             }
 
-            if (arg.equals("-p")) {
-                if (i + 1 < args.length) {
-                    prefix = args[i + 1];
-                    i++;
-                }
-                continue;
-            }
-
-            System.out.println("Читаем файл: " + arg);
-            try {
-                File file = new File(arg);
-                Scanner scanner = new Scanner(file);
+            try (Scanner scanner = new Scanner(file)) {
 
                 while (scanner.hasNextLine()) {
                     String line = scanner.nextLine();
                     classifier.processLine(line);
                 }
 
-                scanner.close();
-
-            } catch (Exception e) {
-                System.out.println("Не удалось прочитать файл: " + arg);
+            } catch (FileNotFoundException e) {
+                System.out.println("Ошибка чтения файла: " + fileName);
             }
         }
-
-        // вывод в консоль
-        classifier.printResults();
-
-        // запись в файлы
-        FileWriterUtil.write(prefix + "integers.txt", classifier.getIntegers(), append);
-        FileWriterUtil.write(prefix + "floats.txt", classifier.getFloats(), append);
-        FileWriterUtil.write(prefix +"strings.txt", classifier.getStrings(), append);
     }
 }
