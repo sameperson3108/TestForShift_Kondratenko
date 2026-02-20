@@ -25,6 +25,8 @@
   -2 Для запуска нужно сделать Edit Configurations  
   ![изображение3](https://github.com/user-attachments/assets/4aef89e9-bc61-4735-831c-032e4e54a1b1)  
   -3 Нажать на add new и выбрать applications  
-  -4 Выставить всё таким образом и в строке прописываются нужные команды (это пример)  
+  -4 Выставить всё таким образом и в строке прописываются нужные команды (это пример)
+  <img width="989" height="843" alt="изображение" src="https://github.com/user-attachments/assets/18aeaae7-a2d5-4237-b7eb-485d7a372e4a" />
+
   -5 После чего совершается запуск  
   ![изображение4](https://github.com/user-attachments/assets/fbe76ee0-6eea-42bf-8c83-6dc834647b55)  
