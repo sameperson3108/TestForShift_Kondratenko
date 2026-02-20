@@ -20,4 +20,15 @@
 
 Вариант 2:
   Через ide на примере intellij:
-  -1
+  -1 Установка версии из release
+  -2 Распаковка этой папки
+  -3 Запуск в idea через корневую папку
+  -4 Для запуска нужно сделать Edit Configurations
+  <img width="1853" height="1021" alt="изображение" src="https://github.com/user-attachments/assets/4aef89e9-bc61-4735-831c-032e4e54a1b1" />
+  -5 Нажать на add new и выбрать applications
+  -6 Выставить всё таким образом и в строке прописываются нужные команды (это пример)
+  -7 После чего совершается запуск 
+  <img width="346" height="185" alt="изображение" src="https://github.com/user-attachments/assets/fbe76ee0-6eea-42bf-8c83-6dc834647b55" />
+  
+
+
