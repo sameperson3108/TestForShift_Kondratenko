@@ -22,7 +22,7 @@ public class FileClassifier {
 
     private boolean isInteger(String s) {
         try {
-            Integer.parseInt(s);
+            Long.parseLong(s);
             return true;
         } catch (NumberFormatException e) {
             return false;
@@ -32,23 +32,15 @@ public class FileClassifier {
     private boolean isDouble(String s) {
         try {
             Double.parseDouble(s);
-            return s.contains(".");
+            return true;
         } catch (NumberFormatException e) {
             return false;
         }
     }
 
-    public List<String> getIntegers() {
-        return integers;
-    }
-
-    public List<String> getFloats() {
-        return floats;
-    }
-
-    public List<String> getStrings() {
-        return strings;
-    }
+    public List<String> getIntegers() {return integers;}
+    public List<String> getFloats() {return floats;}
+    public List<String> getStrings() {return strings;}
 
     public void printShortStats() {
         System.out.println("- Краткая статистика -");
@@ -59,26 +51,23 @@ public class FileClassifier {
 
     public void printFullStats() {
         System.out.println("- Полная статистика -");
-
         if (!integers.isEmpty()) {
-            int min = Integer.parseInt(integers.get(0));
-            int max = min;
+            long min = Long.parseLong(integers.get(0));
+            long max = min;
             long sum = 0;
-
             for (String str : integers) {
-                int value = Integer.parseInt(str);
-
+                long value = Long.parseLong(str);
                 if (value < min) min = value;
                 if (value > max) max = value;
-
                 sum += value;
             }
-            System.out.println("Integers: ");
+
+            System.out.println("Integers:");
             System.out.println("Count: " + integers.size());
             System.out.println("Min: " + min);
             System.out.println("Max: " + max);
             System.out.println("Sum: " + sum);
-            System.out.println("Average: " + (sum / (double)integers.size()));
+            System.out.println("Average: " + (sum / (double) integers.size()));
         }
 
         if (!floats.isEmpty()) {
@@ -94,7 +83,8 @@ public class FileClassifier {
 
                 sum += value;
             }
-            System.out.println("Floats: ");
+
+            System.out.println("Floats:");
             System.out.println("Count: " + floats.size());
             System.out.println("Min: " + min);
             System.out.println("Max: " + max);
@@ -113,11 +103,10 @@ public class FileClassifier {
                 if (length > maxLength) maxLength = length;
             }
 
-            System.out.println("Strings: ");
+            System.out.println("Strings:");
             System.out.println("Count: " + strings.size());
-            System.out.println("min: " + minLength);
-            System.out.println("max: " + maxLength);
+            System.out.println("Min length: " + minLength);
+            System.out.println("Max length: " + maxLength);
         }
     }
 }
-

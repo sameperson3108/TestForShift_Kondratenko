@@ -7,7 +7,6 @@ import java.util.Scanner;
 public class Main {
 
     public static void main(String[] args) {
-
         if (args.length == 0) {
             System.out.println("Ошибка: не переданы аргументы.");
             return;
@@ -27,17 +26,24 @@ public class Main {
         FileClassifier classifier = new FileClassifier();
         processFiles(options, classifier);
 
-        FileWriterUtil.write(options.prefix + "integers.txt", classifier.getIntegers(), options.append);
-        FileWriterUtil.write(options.prefix + "floats.txt", classifier.getFloats(), options.append);
-        FileWriterUtil.write(options.prefix + "strings.txt", classifier.getStrings(), options.append);
+        if (!classifier.getIntegers().isEmpty()) {
+            FileWriterUtil.write(options.outputPath + options.prefix + "integers.txt", classifier.getIntegers(), options.append);
+        }
+
+        if (!classifier.getFloats().isEmpty()) {
+            FileWriterUtil.write(options.outputPath + options.prefix + "floats.txt", classifier.getFloats(), options.append);
+        }
+
+        if (!classifier.getStrings().isEmpty()) {
+            FileWriterUtil.write(options.outputPath + options.prefix + "strings.txt", classifier.getStrings(), options.append);
+        }
 
         if (options.fullStats) {
             classifier.printFullStats();
         } else if (options.shortStats) {
             classifier.printShortStats();
         }
-
-        System.out.println("Готово.");
+        System.out.println("Сделано.");
     }
 
     private static EnterOptions parseArguments(String[] args) {
@@ -69,9 +75,19 @@ public class Main {
                     }
                     break;
 
+                case "-o":
+                    if (i + 1 < args.length && !args[i + 1].startsWith("-")) {
+                        options.outputPath = args[i + 1];
+                        i++;
+                    } else {
+                        System.out.println("Ошибка: после -o нужно указать путь.");
+                        return null;
+                    }
+                    break;
+
                 default:
                     if (arg.startsWith("-")) {
-                        System.out.println("Неизвестный параметр: " + arg);
+                        System.out.println("Ошибка: Неизвестный параметр " + arg);
                         return null;
                     }
                     options.addFile(arg);
@@ -84,7 +100,7 @@ public class Main {
     private static void processFiles(EnterOptions options, FileClassifier classifier) {
 
         for (String fileName : options.files) {
-            System.out.println("Читаем файл: " + fileName);
+            System.out.println("Чтение файла: " + fileName);
 
             File file = new File(fileName);
 

@@ -8,6 +8,7 @@ public class EnterOptions {
     public boolean shortStats = false;
     public boolean fullStats = false;
     public String prefix = "";
+    public String outputPath = "";
 
     public List<String> files = new ArrayList<>();
 
