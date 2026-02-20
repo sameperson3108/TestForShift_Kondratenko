@@ -1,4 +1,4 @@
-<img width="1115" height="150" alt="изображение" src="https://github.com/user-attachments/assets/2ce12f93-c0d3-496a-8ada-5ba2a7ba5b31" />Версия Java - 25
+Версия Java - 25
 Сборка Maven - 4.0.0
 Сторонние библиотеки не использовались
 
